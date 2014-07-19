@@ -24,18 +24,32 @@
  * SOFTWARE   OR   THE   USE   OR   OTHER   DEALINGS  IN  THE  SOFTWARE.
  */
 
-package dev.ataxexe.android.xposedtrack;
+package tools.devnull.xposedtrack;
+
+import de.robv.android.xposed.XC_MethodHook;
 
 /**
- * An interface that defines a component capable of hooking a target.
+ * Interface for selecting a target for Xposed to hook.
  *
  * @author Marcelo Guimarães
  */
-public interface MethodHook {
+public interface XposerSelector {
 
   /**
-   * Tries to hook the method on the device.
+   * Indicates the parameter types of the hook target. Any parameter can be a
+   * String representing the class name or the Class itself.
+   *
+   * @param parameters the target parameters.
+   * @return an reference to this object.
    */
-  void tryHook();
+  XposerSelector thatTakes(Object... parameters);
+
+  /**
+   * Tries to hook the target using the given component.
+   *
+   * @param methodHook the component to process method hooks.
+   * @return a reference to an Xposer object for doing more hooks.
+   */
+  Xposer with(XC_MethodHook methodHook);
 
 }

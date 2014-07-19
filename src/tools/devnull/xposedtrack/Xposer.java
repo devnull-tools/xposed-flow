@@ -24,7 +24,7 @@
  * SOFTWARE   OR   THE   USE   OR   OTHER   DEALINGS  IN  THE  SOFTWARE.
  */
 
-package dev.ataxexe.android.xposedtrack;
+package tools.devnull.xposedtrack;
 
 /**
  * Fluent Interface for defining hooks using the Xposed Bridge.

@@ -24,7 +24,7 @@
  * SOFTWARE   OR   THE   USE   OR   OTHER   DEALINGS  IN  THE  SOFTWARE.
  */
 
-package dev.ataxexe.android.xposedtrack;
+package tools.devnull.xposedtrack;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
