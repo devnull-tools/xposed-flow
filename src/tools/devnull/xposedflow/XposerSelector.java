@@ -52,4 +52,9 @@ public interface XposerSelector {
    */
   Xposer with(XC_MethodHook methodHook);
 
+  /**
+   * @see #with(de.robv.android.xposed.XC_MethodHook)
+   */
+  Xposer by(XC_MethodHook methodHook);
+
 }

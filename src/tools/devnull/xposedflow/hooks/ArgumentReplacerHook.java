@@ -24,36 +24,64 @@
  * SOFTWARE   OR   THE   USE   OR   OTHER   DEALINGS  IN  THE  SOFTWARE.
  */
 
-package tools.devnull.xposedflow;
+package tools.devnull.xposedflow.hooks;
+
+import de.robv.android.xposed.XC_MethodHook;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Fluent Interface for defining hooks using the Xposed Bridge.
+ * A method hook that replaces arguments with new values.
  *
  * @author Marcelo Guimarães
  */
-public interface Xposer {
+public class ArgumentReplacerHook extends XC_MethodHook {
+
+  private Map<Integer, Object> arguments = new HashMap<Integer, Object>();
 
   /**
-   * Sets the exception handler to use.
+   * Replaces the parameter at {@code index} position with a new value.
    *
-   * @param handler the component to handle exceptions
-   * @return a reference to this object.
+   * @param index the parameter index
+   * @return a component for selecting the new value
    */
-  Xposer onError(ExceptionHandler handler);
+  public ValueSelector replace(final int index) {
+    return new ValueSelector() {
+      @Override
+      public ArgumentReplacerHook with(Object value) {
+        arguments.put(index, value);
+        return ArgumentReplacerHook.this;
+      }
+    };
+  }
 
   /**
-   * Hook a method.
-   *
-   * @param methodName the method name.
-   * @return a component for selecting the method.
+   * @see #replace(int)
    */
-  XposerSelector hook(String methodName);
+  public ValueSelector replacing(int index) {
+    return replace(index);
+  }
+
+  @Override
+  protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+    for (Map.Entry<Integer, Object> arg : arguments.entrySet()) {
+      param.args[arg.getKey()] = arg.getValue();
+    }
+  }
 
   /**
-   * Hook a constructor.
-   *
-   * @return a component for selecting the constructor.
+   * Interface for defining values.
    */
-  XposerSelector hookConstructor();
+  public interface ValueSelector {
+
+    /**
+     * Defines the value that will replace the selected argument.
+     *
+     * @param value the value to replace the argument
+     * @return a reference for the method hook so you can select more indexes
+     */
+    ArgumentReplacerHook with(Object value);
+  }
 
 }

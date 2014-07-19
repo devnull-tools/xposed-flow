@@ -26,16 +26,58 @@
 
 package tools.devnull.xposedflow;
 
+import de.robv.android.xposed.XC_MethodHook;
+import tools.devnull.xposedflow.hooks.ArgumentReplacerHook;
+
 /**
- * An interface that defines a component capable of hooking a target.
+ * A set of method hooks for general use.
  *
  * @author Marcelo Guimarães
  */
-public interface MethodHook {
+public class Hooks {
+
+  private Hooks() {
+
+  }
 
   /**
-   * Tries to hook the method on the device.
+   * Creates a new method hook that replaces the arguments before calling
+   * the real method.
+   *
+   * @param newArgs the new arguments to use
+   * @return a new instance of the method hook
    */
-  void tryHook();
+  public static XC_MethodHook replacingArgsWith(final Object... newArgs) {
+    return new XC_MethodHook() {
+      @Override
+      protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+        param.args = newArgs;
+      }
+    };
+  }
+
+  /**
+   * Creates a new method hook that replaces the arguments at the given indexes
+   * by a new value.
+   */
+  public static ArgumentReplacerHook.ValueSelector replacing(int index) {
+    return new ArgumentReplacerHook().replace(index);
+  }
+
+  /**
+   * Creates a new method hook that always returns the given value.
+   * <p/>
+   * This hook never lets the original method to execute.
+   *
+   * @param value  the value to return
+   */
+  public static XC_MethodHook returning(final Object value) {
+    return new XC_MethodHook() {
+      @Override
+      protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+        param.setResult(value);
+      }
+    };
+  }
 
 }

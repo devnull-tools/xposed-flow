@@ -27,33 +27,10 @@
 package tools.devnull.xposedflow;
 
 /**
- * Fluent Interface for defining hooks using the Xposed Bridge.
- *
  * @author Marcelo Guimarães
  */
-public interface Xposer {
+public interface ExceptionHandler {
 
-  /**
-   * Sets the exception handler to use.
-   *
-   * @param handler the component to handle exceptions
-   * @return a reference to this object.
-   */
-  Xposer onError(ExceptionHandler handler);
-
-  /**
-   * Hook a method.
-   *
-   * @param methodName the method name.
-   * @return a component for selecting the method.
-   */
-  XposerSelector hook(String methodName);
-
-  /**
-   * Hook a constructor.
-   *
-   * @return a component for selecting the constructor.
-   */
-  XposerSelector hookConstructor();
+  void handleException(Throwable throwable);
 
 }

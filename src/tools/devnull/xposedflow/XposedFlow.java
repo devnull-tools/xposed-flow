@@ -27,6 +27,7 @@
 package tools.devnull.xposedflow;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.List;
 public class XposedFlow implements Xposer {
 
   private final Class type;
+  private ExceptionHandler handler = new DefaultExceptionHandler();
 
   /**
    * Creates a new flow for the given class
@@ -57,9 +59,13 @@ public class XposedFlow implements Xposer {
 
       @Override
       public Xposer with(XC_MethodHook methodHook) {
-        XposedHelpers.findAndHookMethod(
-            type, methodName, parametersAnd(methodHook)
-        );
+        try {
+          XposedHelpers.findAndHookMethod(
+              type, methodName, parametersAnd(methodHook)
+          );
+        } catch (Throwable t) {
+          handler.handleException(t);
+        }
         return XposedFlow.this;
       }
     };
@@ -71,12 +77,22 @@ public class XposedFlow implements Xposer {
 
       @Override
       public Xposer with(XC_MethodHook methodHook) {
-        XposedHelpers.findAndHookConstructor(
-            type, parametersAnd(methodHook)
-        );
+        try {
+          XposedHelpers.findAndHookConstructor(
+              type, parametersAnd(methodHook)
+          );
+        } catch (Throwable t) {
+          handler.handleException(t);
+        }
         return XposedFlow.this;
       }
     };
+  }
+
+  @Override
+  public Xposer onError(ExceptionHandler handler) {
+    this.handler = handler;
+    return this;
   }
 
   /**
@@ -120,6 +136,11 @@ public class XposedFlow implements Xposer {
       return this;
     }
 
+    @Override
+    public Xposer by(XC_MethodHook methodHook) {
+      return with(methodHook);
+    }
+
     /**
      * Returns the parameters plus the method hook for passing them to the
      * helper methods in XposedHelpers.
@@ -133,6 +154,14 @@ public class XposedFlow implements Xposer {
       return list.toArray();
     }
 
+  }
+
+  private static class DefaultExceptionHandler implements ExceptionHandler {
+
+    @Override
+    public void handleException(Throwable throwable) {
+      XposedBridge.log(throwable);
+    }
   }
 
 }
