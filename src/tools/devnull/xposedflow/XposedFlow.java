@@ -24,7 +24,7 @@
  * SOFTWARE   OR   THE   USE   OR   OTHER   DEALINGS  IN  THE  SOFTWARE.
  */
 
-package tools.devnull.xposedtrack;
+package tools.devnull.xposedflow;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
@@ -37,11 +37,11 @@ import java.util.List;
 /**
  * @author Marcelo Guimarães
  */
-public class XposedTrack implements Xposer {
+public class XposedFlow implements Xposer {
 
   private final Class type;
 
-  public XposedTrack(Class type) {
+  public XposedFlow(Class type) {
     this.type = type;
   }
 
@@ -54,7 +54,7 @@ public class XposedTrack implements Xposer {
         XposedHelpers.findAndHookMethod(
             type, methodName, parametersAnd(methodHook)
         );
-        return XposedTrack.this;
+        return XposedFlow.this;
       }
     };
   }
@@ -68,21 +68,21 @@ public class XposedTrack implements Xposer {
         XposedHelpers.findAndHookConstructor(
             type, parametersAnd(methodHook)
         );
-        return XposedTrack.this;
+        return XposedFlow.this;
       }
     };
   }
 
   public static Xposer xpose(Class type) {
-    return new XposedTrack(type);
+    return new XposedFlow(type);
   }
 
   public static Xposer xpose(String className, ClassLoader classLoader) {
-    return new XposedTrack(XposedHelpers.findClass(className, classLoader));
+    return new XposedFlow(XposedHelpers.findClass(className, classLoader));
   }
 
   public static Xposer xpose(String className) {
-    return new XposedTrack(XposedHelpers.findClass(className, null));
+    return new XposedFlow(XposedHelpers.findClass(className, null));
   }
 
   private abstract class BaseXposerSelector implements XposerSelector {

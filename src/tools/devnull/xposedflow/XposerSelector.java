@@ -24,28 +24,32 @@
  * SOFTWARE   OR   THE   USE   OR   OTHER   DEALINGS  IN  THE  SOFTWARE.
  */
 
-package tools.devnull.xposedtrack;
+package tools.devnull.xposedflow;
+
+import de.robv.android.xposed.XC_MethodHook;
 
 /**
- * Fluent Interface for defining hooks using the Xposed Bridge.
+ * Interface for selecting a target for Xposed to hook.
  *
  * @author Marcelo Guimarães
  */
-public interface Xposer {
+public interface XposerSelector {
 
   /**
-   * Hook a method.
+   * Indicates the parameter types of the hook target. Any parameter can be a
+   * String representing the class name or the Class itself.
    *
-   * @param methodName the method name.
-   * @return a component for selecting the method.
+   * @param parameters the target parameters.
+   * @return an reference to this object.
    */
-  XposerSelector hook(String methodName);
+  XposerSelector thatTakes(Object... parameters);
 
   /**
-   * Hook a constructor.
+   * Tries to hook the target using the given component.
    *
-   * @return a component for selecting the constructor.
+   * @param methodHook the component to process method hooks.
+   * @return a reference to an Xposer object for doing more hooks.
    */
-  XposerSelector hookConstructor();
+  Xposer with(XC_MethodHook methodHook);
 
 }

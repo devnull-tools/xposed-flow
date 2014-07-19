@@ -24,7 +24,7 @@
  * SOFTWARE   OR   THE   USE   OR   OTHER   DEALINGS  IN  THE  SOFTWARE.
  */
 
-package tools.devnull.xposedtrack;
+package tools.devnull.xposedflow;
 
 /**
  * An interface that defines a component capable of hooking a target.
