@@ -33,15 +33,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
+ * This class encapsulates the XposedHelpers with a fluent interface.
+ *
  * @author Marcelo Guimarães
  */
 public class XposedFlow implements Xposer {
 
   private final Class type;
 
-  public XposedFlow(Class type) {
+  /**
+   * Creates a new flow for the given class
+   *
+   * @param type the class to hook methods or constructors
+   */
+  private XposedFlow(Class type) {
     this.type = type;
   }
 
@@ -73,14 +79,33 @@ public class XposedFlow implements Xposer {
     };
   }
 
+  /**
+   * Starts the fluent interface for the given type.
+   *
+   * @param type the class to process hooks
+   * @return a new Xposer instance.
+   */
   public static Xposer xpose(Class type) {
     return new XposedFlow(type);
   }
 
+  /**
+   * Starts the fluent interface for the given type.
+   *
+   * @param className   the name of the class to process hooks
+   * @param classLoader the ClassLoader to load the class
+   * @return a new Xposer instance.
+   */
   public static Xposer xpose(String className, ClassLoader classLoader) {
     return new XposedFlow(XposedHelpers.findClass(className, classLoader));
   }
 
+  /**
+   * Starts the fluent interface for the given type.
+   *
+   * @param className the name of the class to process hooks
+   * @return a new Xposer instance.
+   */
   public static Xposer xpose(String className) {
     return new XposedFlow(XposedHelpers.findClass(className, null));
   }
@@ -95,8 +120,15 @@ public class XposedFlow implements Xposer {
       return this;
     }
 
+    /**
+     * Returns the parameters plus the method hook for passing them to the
+     * helper methods in XposedHelpers.
+     *
+     * @param methodHook the method hook
+     * @return the parameters that should be passed to the helper methods.
+     */
     protected Object[] parametersAnd(XC_MethodHook methodHook) {
-      List<Object> list = new ArrayList(Arrays.asList(parameters));
+      List<Object> list = new ArrayList<Object>(Arrays.asList(parameters));
       list.add(methodHook);
       return list.toArray();
     }
