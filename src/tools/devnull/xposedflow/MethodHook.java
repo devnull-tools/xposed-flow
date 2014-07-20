@@ -24,64 +24,53 @@
  * SOFTWARE   OR   THE   USE   OR   OTHER   DEALINGS  IN  THE  SOFTWARE.
  */
 
-package tools.devnull.xposedflow.hooks;
+package tools.devnull.xposedflow;
 
-import tools.devnull.xposedflow.MethodHook;
-
-import java.util.HashMap;
-import java.util.Map;
+import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
 
 /**
- * A method hook that replaces arguments with new values.
- *
  * @author Marcelo Guimarães
  */
-public class ArgumentReplacerHook extends MethodHook {
+public class MethodHook extends XC_MethodHook {
 
-  private Map<Integer, Object> arguments = new HashMap<Integer, Object>();
+  private String activateProperty;
 
-  /**
-   * Replaces the parameter at {@code index} position with a new value.
-   *
-   * @param index the parameter index
-   * @return a component for selecting the new value
-   */
-  public ValueSelector replace(final int index) {
-    return new ValueSelector() {
-      @Override
-      public ArgumentReplacerHook with(Object value) {
-        arguments.put(index, value);
-        return ArgumentReplacerHook.this;
-      }
-    };
+  public MethodHook() {
+    super();
   }
 
-  /**
-   * @see #replace(int)
-   */
-  public ValueSelector replacing(int index) {
-    return replace(index);
+  public MethodHook(int priority) {
+    super(priority);
+  }
+
+  public final MethodHook activeOn(String key) {
+    this.activateProperty = key;
+    return this;
   }
 
   @Override
-  protected void doBefore(MethodHookParam param) throws Throwable {
-    for (Map.Entry<Integer, Object> arg : arguments.entrySet()) {
-      param.args[arg.getKey()] = arg.getValue();
+  protected final void beforeHookedMethod(MethodHookParam param) throws Throwable {
+    if (activateProperty == null ||
+        (Boolean) XposedHelpers.getAdditionalInstanceField(this, activateProperty)) {
+      doBefore(param);
     }
   }
 
-  /**
-   * Interface for defining values.
-   */
-  public interface ValueSelector {
+  @Override
+  protected final void afterHookedMethod(MethodHookParam param) throws Throwable {
+    if (activateProperty == null ||
+        (Boolean) XposedHelpers.getAdditionalInstanceField(this, activateProperty)) {
+      doAfter(param);
+    }
+  }
 
-    /**
-     * Defines the value that will replace the selected argument.
-     *
-     * @param value the value to replace the argument
-     * @return a reference for the method hook so you can select more indexes
-     */
-    ArgumentReplacerHook with(Object value);
+  protected void doBefore(MethodHookParam param) throws Throwable {
+
+  }
+
+  protected void doAfter(MethodHookParam param) throws Throwable {
+
   }
 
 }

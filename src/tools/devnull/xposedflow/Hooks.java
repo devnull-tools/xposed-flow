@@ -26,7 +26,6 @@
 
 package tools.devnull.xposedflow;
 
-import de.robv.android.xposed.XC_MethodHook;
 import tools.devnull.xposedflow.hooks.ArgumentReplacerHook;
 
 /**
@@ -47,10 +46,10 @@ public class Hooks {
    * @param newArgs the new arguments to use
    * @return a new instance of the method hook
    */
-  public static XC_MethodHook replacingArgsWith(final Object... newArgs) {
-    return new XC_MethodHook() {
+  public static MethodHook replacingArgsWith(final Object... newArgs) {
+    return new MethodHook() {
       @Override
-      protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+      protected void doBefore(MethodHookParam param) throws Throwable {
         param.args = newArgs;
       }
     };
@@ -69,12 +68,12 @@ public class Hooks {
    * <p/>
    * This hook never lets the original method to execute.
    *
-   * @param value  the value to return
+   * @param value the value to return
    */
-  public static XC_MethodHook returning(final Object value) {
-    return new XC_MethodHook() {
+  public static MethodHook returning(final Object value) {
+    return new MethodHook() {
       @Override
-      protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+      protected void doBefore(MethodHookParam param) throws Throwable {
         param.setResult(value);
       }
     };
