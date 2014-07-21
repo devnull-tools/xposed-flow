@@ -26,49 +26,19 @@
 
 package tools.devnull.xposedflow;
 
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_InitPackageResources;
-import tools.devnull.xposedflow.impl.ClassXposerImpl;
-import tools.devnull.xposedflow.impl.ResourceXposerImpl;
+import de.robv.android.xposed.callbacks.XC_LayoutInflated;
 
 /**
+ * Fluent interface for replacing resources and hooking layouts.
+ *
  * @author Marcelo Guimarães
  */
-public class XposedFlow {
+public interface ResourceXposer {
 
-  /**
-   * Starts the fluent interface for the given type.
-   *
-   * @param type the class to process hooks
-   */
-  public static ClassXposer xpose(Class type) {
-    return new ClassXposerImpl(type);
-  }
+  ResourceXposer at(String packageName);
 
-  /**
-   * Starts the fluent interface for the given type.
-   *
-   * @param className   the name of the class to process hooks
-   * @param classLoader the ClassLoader to load the class
-   */
-  public static ClassXposer xpose(String className, ClassLoader classLoader) {
-    return new ClassXposerImpl(XposedHelpers.findClass(className, classLoader));
-  }
+  ResourceXposerSelector replace(String... resourceNames);
 
-  /**
-   * Starts the fluent interface for the given type.
-   *
-   * @param className the name of the class to process hooks
-   */
-  public static ClassXposer xpose(String className) {
-    return new ClassXposerImpl(XposedHelpers.findClass(className, null));
-  }
-
-  /**
-   * Starts the fluent interface for the given InitPackageResourcesParam.
-   */
-  public static ResourceXposer xpose(XC_InitPackageResources.InitPackageResourcesParam resparams) {
-    return new ResourceXposerImpl(resparams);
-  }
+  Selector<XC_LayoutInflated, ResourceXposer> hookLayout(String name);
 
 }

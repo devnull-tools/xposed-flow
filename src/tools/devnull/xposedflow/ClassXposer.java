@@ -26,49 +26,34 @@
 
 package tools.devnull.xposedflow;
 
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_InitPackageResources;
-import tools.devnull.xposedflow.impl.ClassXposerImpl;
-import tools.devnull.xposedflow.impl.ResourceXposerImpl;
-
 /**
+ * Fluent Interface for defining hooks for a class using the Xposed Bridge.
+ *
  * @author Marcelo Guimarães
  */
-public class XposedFlow {
+public interface ClassXposer {
 
   /**
-   * Starts the fluent interface for the given type.
+   * Sets the exception handler to use.
    *
-   * @param type the class to process hooks
+   * @param handler the component to handle exceptions
+   * @return a reference to this object.
    */
-  public static ClassXposer xpose(Class type) {
-    return new ClassXposerImpl(type);
-  }
+  ClassXposer onError(ExceptionHandler handler);
 
   /**
-   * Starts the fluent interface for the given type.
+   * Hook a method.
    *
-   * @param className   the name of the class to process hooks
-   * @param classLoader the ClassLoader to load the class
+   * @param methodName the method name.
+   * @return a component for selecting the method.
    */
-  public static ClassXposer xpose(String className, ClassLoader classLoader) {
-    return new ClassXposerImpl(XposedHelpers.findClass(className, classLoader));
-  }
+  ClassXposerSelector hook(String methodName);
 
   /**
-   * Starts the fluent interface for the given type.
+   * Hook a constructor.
    *
-   * @param className the name of the class to process hooks
+   * @return a component for selecting the constructor.
    */
-  public static ClassXposer xpose(String className) {
-    return new ClassXposerImpl(XposedHelpers.findClass(className, null));
-  }
-
-  /**
-   * Starts the fluent interface for the given InitPackageResourcesParam.
-   */
-  public static ResourceXposer xpose(XC_InitPackageResources.InitPackageResourcesParam resparams) {
-    return new ResourceXposerImpl(resparams);
-  }
+  ClassXposerSelector hookConstructor();
 
 }

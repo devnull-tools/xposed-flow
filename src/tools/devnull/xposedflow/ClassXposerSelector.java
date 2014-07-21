@@ -26,49 +26,35 @@
 
 package tools.devnull.xposedflow;
 
-import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_InitPackageResources;
-import tools.devnull.xposedflow.impl.ClassXposerImpl;
-import tools.devnull.xposedflow.impl.ResourceXposerImpl;
+import de.robv.android.xposed.XC_MethodHook;
 
 /**
+ * Interface for selecting a target for Xposed to hook.
+ *
  * @author Marcelo Guimarães
  */
-public class XposedFlow {
+public interface ClassXposerSelector extends Selector<XC_MethodHook, ClassXposer> {
 
   /**
-   * Starts the fluent interface for the given type.
+   * Indicates the parameter types of the hook target. Any parameter can be a
+   * String representing the class name or the Class itself.
    *
-   * @param type the class to process hooks
+   * @param parameters the target parameters.
+   * @return an reference to this object.
    */
-  public static ClassXposer xpose(Class type) {
-    return new ClassXposerImpl(type);
-  }
+  ClassXposerSelector thatTakes(Object... parameters);
 
   /**
-   * Starts the fluent interface for the given type.
+   * Tries to hook the target using the given component.
    *
-   * @param className   the name of the class to process hooks
-   * @param classLoader the ClassLoader to load the class
+   * @param methodHook the component to process method hooks.
+   * @return a reference to an Xposer object for doing more hooks.
    */
-  public static ClassXposer xpose(String className, ClassLoader classLoader) {
-    return new ClassXposerImpl(XposedHelpers.findClass(className, classLoader));
-  }
+  ClassXposer with(XC_MethodHook methodHook);
 
   /**
-   * Starts the fluent interface for the given type.
-   *
-   * @param className the name of the class to process hooks
+   * @see #with(de.robv.android.xposed.XC_MethodHook)
    */
-  public static ClassXposer xpose(String className) {
-    return new ClassXposerImpl(XposedHelpers.findClass(className, null));
-  }
-
-  /**
-   * Starts the fluent interface for the given InitPackageResourcesParam.
-   */
-  public static ResourceXposer xpose(XC_InitPackageResources.InitPackageResourcesParam resparams) {
-    return new ResourceXposerImpl(resparams);
-  }
+  ClassXposer by(XC_MethodHook methodHook);
 
 }

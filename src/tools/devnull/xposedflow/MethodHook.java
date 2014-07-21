@@ -30,6 +30,10 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 
 /**
+ * An abstraction of a method hook that support defining an
+ * {@link de.robv.android.xposed.XposedHelpers#setAdditionalInstanceField(Object, String, Object)
+ * instance field} for activating it.
+ *
  * @author Marcelo Guimarães
  */
 public class MethodHook extends XC_MethodHook {
@@ -44,6 +48,13 @@ public class MethodHook extends XC_MethodHook {
     super(priority);
   }
 
+  /**
+   * Sets the boolean instance field name that should be {@code true} if this
+   * hook should be activated.
+   *
+   * @param key the instance field name
+   * @return a reference for this instance
+   */
   public final MethodHook activeOn(String key) {
     this.activateProperty = key;
     return this;
@@ -65,10 +76,16 @@ public class MethodHook extends XC_MethodHook {
     }
   }
 
+  /**
+   * Do stuff before calling the real method.
+   */
   protected void doBefore(MethodHookParam param) throws Throwable {
 
   }
 
+  /**
+   * Do stuff after calling the real method.
+   */
   protected void doAfter(MethodHookParam param) throws Throwable {
 
   }

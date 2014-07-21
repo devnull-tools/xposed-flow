@@ -27,10 +27,17 @@
 package tools.devnull.xposedflow;
 
 /**
+ * Interface that defines an exception handler.
+ *
  * @author Marcelo Guimarães
  */
 public interface ExceptionHandler {
 
+  /**
+   * Handles the exception.
+   *
+   * @param throwable the exception thrown
+   */
   void handleException(Throwable throwable);
 
 }

@@ -26,34 +26,47 @@
 
 package tools.devnull.xposedflow;
 
+import android.content.res.XResources;
+import android.util.TypedValue;
+
 /**
- * Fluent Interface for defining hooks using the Xposed Bridge.
- *
  * @author Marcelo Guimarães
  */
-public interface Xposer {
+public enum Dimension {
 
   /**
-   * Sets the exception handler to use.
-   *
-   * @param handler the component to handle exceptions
-   * @return a reference to this object.
+   * Raw Pixel
    */
-  Xposer onError(ExceptionHandler handler);
-
+  px(TypedValue.COMPLEX_UNIT_PX),
   /**
-   * Hook a method.
-   *
-   * @param methodName the method name.
-   * @return a component for selecting the method.
+   * Device Independent Pixel
    */
-  XposerSelector hook(String methodName);
-
+  dip(TypedValue.COMPLEX_UNIT_DIP),
   /**
-   * Hook a constructor.
-   *
-   * @return a component for selecting the constructor.
+   * Scaled Pixel
    */
-  XposerSelector hookConstructor();
+  sp(TypedValue.COMPLEX_UNIT_SP),
+  /**
+   * Points
+   */
+  pt(TypedValue.COMPLEX_UNIT_PT),
+  /**
+   * Inches
+   */
+  in(TypedValue.COMPLEX_UNIT_IN),
+  /**
+   * Millimeters
+   */
+  mm(TypedValue.COMPLEX_UNIT_MM);
+
+  private final int unitType;
+
+  Dimension(int unitType) {
+    this.unitType = unitType;
+  }
+
+  public XResources.DimensionReplacement valueOf(float value) {
+    return new XResources.DimensionReplacement(value, unitType);
+  }
 
 }
